@@ -5,7 +5,7 @@ import sys
 from sqlalchemy.exc import NoResultFound
 
 from models import Vocabulary
-from dr_eye_dict import lookup
+from utils import lookup
 from schemas import VocabularySchema
 from db import get_session
 from exceptions import VocabularyNofound
