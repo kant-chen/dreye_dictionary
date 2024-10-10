@@ -37,17 +37,19 @@ def lookup(keyword: str) -> Optional[VocabularySchema]:
     content_zh_div = description_body.find("div", {"id": "usual", "class": "content"})
     # English to Chinese explanation 
     content_zh = ""
-    for line in content_zh_div.find_all():
-        if line.string:
-            content_zh = content_zh + line.string.strip() + "\n"
+    if content_zh_div:
+        for line in content_zh_div.find_all():
+            if line.string:
+                content_zh = content_zh + line.string.strip() + "\n"
 
     content_zh = content_zh.rstrip()
     # English to English explanation 
     content_en_div = description_body.find("div", {"id": "oxfordEE", "class": "content"})
     content_en = ""
-    for line in content_en_div.find_all():
-        if line.string:
-            content_en = content_en + line.string.strip() + "\n"
+    if content_en_div:
+        for line in content_en_div.find_all():
+            if line.string:
+                content_en = content_en + line.string.strip() + "\n"
 
     content_en = content_en.rstrip()
 
