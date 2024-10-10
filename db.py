@@ -1,14 +1,11 @@
 import os
-import logging
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-# logging.basicConfig()
-logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
-current_path = os.getcwd()
+current_path = os.path.dirname(__file__)
 db_path = os.path.join(current_path, "dict.db")
-engine = create_engine(f"sqlite:///{db_path}", echo=True)
+engine = create_engine(f"sqlite:///{db_path}", echo=False)
 
 
 def get_session():
