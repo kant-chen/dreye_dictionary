@@ -1,5 +1,6 @@
 
 import requests
+import re
 from typing import Optional
 
 from bs4 import BeautifulSoup
@@ -34,25 +35,31 @@ def lookup(keyword: str) -> Optional[VocabularySchema]:
     if content_digest:
         variant = " ".join(map(lambda x: x.string.strip(), content_digest.p.children))  # verb variants
     description_body = q_middle_bd.find_next("div", {"class": "q_middle_bd"})
+    pattern = re.compile(r"\](?P<word>\w)")
+    pattern2 = re.compile("(同義:|反義:|同義參見:|反義參見:)")
     content_zh_div = description_body.find("div", {"id": "usual", "class": "content"})
     # English to Chinese explanation 
     content_zh = ""
     if content_zh_div:
-        for line in content_zh_div.find_all():
-            if line.string:
-                content_zh = content_zh + line.string.strip() + "\n"
+        for line in content_zh_div.find_all(recursive=False):
+            if line.text:
+                # break to sperate line for better reading
+                line_text = pattern.sub(r"]\n\1", line.text)
+                line_text = pattern2.sub(r"\n\1\n", line_text)
+                content_zh = content_zh + line_text.strip() + "\n"
 
     content_zh = content_zh.rstrip()
     # English to English explanation 
     content_en_div = description_body.find("div", {"id": "oxfordEE", "class": "content"})
     content_en = ""
     if content_en_div:
-        for line in content_en_div.find_all():
-            if line.string:
-                content_en = content_en + line.string.strip() + "\n"
+        for line in content_en_div.find_all(recursive=False):
+            if line.text:
+                content_en = content_en + line.text.strip() + "\n"
 
     content_en = content_en.rstrip()
 
     vocabulary = VocabularySchema(name, pronunciation=pronunciation, content_en=content_en, content_zh=content_zh, variant=variant)
 
     return vocabulary
+
